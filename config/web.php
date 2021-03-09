@@ -17,6 +17,9 @@ $config = [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'qwertyuiop1234511116',
+			'parsers' => [
+				'application/json' => 'yii\web\JsonParser',
+			]
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -62,14 +65,52 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
+        
+		
         'urlManager' => [
             'enablePrettyUrl' => true,
+			'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
+                //['class' => 'yii\rest\UrlRule', 'controller' => 'user'], 
+                //['class' => 'yii\rest\UrlRule', 'controller' => 'app'],
+				['class' => 'yii\rest\UrlRule', 'controller' => 'producto', 'pluralize'=>false], // sin pluralize no funciona PUT
+                [
+                    'class' => 'yii\rest\UrlRule', 
+                    'controller' => ['producto'],
+                    'tokens' => ['{id}' => '<id:\\w+>','{app_idApp}'=>'<app_idApp:\\w+>'],
+					'extraPatterns'=>['PUT'=>'update']
+                ]
+				,
+				'<controller:(producto)>/<app_idApp:\w+>' => '<controller>/index',
+				['class' => 'yii\rest\UrlRule', 'controller' => 'producto', 'pluralize'=>false],
+                [
+                    'class' => 'yii\rest\UrlRule', 
+                    'controller' => ['categoria'],
+                    'tokens' => ['{codigo}' => '<codigo:\\w+>','{app_idApp}'=>'<app_idApp:\\w+>'],
+					'extraPatterns'=>['PUT'=>'update'],
+					
+					
+                ],
+				['class' => 'yii\rest\UrlRule', 'controller' => 'upload', 'pluralize'=>false,'extraPatterns'=>['POST upload'=>'upload']],
+				
+				[
+                    'class' => 'yii\rest\UrlRule', 
+                    'controller' => ['contacto'],
+                    'tokens' => ['{id}' => '<codigo:\\d+>','{app_idApp}'=>'<app_idApp:\\w+>'],
+					'extraPatterns'=>['PUT'=>'update'],
+					
+					
+                ],
+				
+				//'PUT <controller:[\w-]+>/<id:\d+>'    => '<controller>/update',
+				
+				
+               
             ],
         ],
-        */
+        
+		
     ],
     'params' => $params,
 ];

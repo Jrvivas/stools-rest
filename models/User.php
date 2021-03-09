@@ -14,6 +14,7 @@ use Yii;
  * @property type $password Description
  * @property type $authKey Description
  * @property type $accessToken Description
+ * @property Apps [] $apps
  */
 class User extends ActiveRecord implements \yii\web\IdentityInterface {
     
@@ -52,6 +53,11 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface {
     public function getId() {
         return $this->id;
     }
+
+    public function extraFields()
+        {
+        return ['apps'];
+        }
 
 
     /**
@@ -184,7 +190,15 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface {
         }
         return false;
     }
-
+    /**
+     * Gets query for [[Apps]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApps()
+    {
+        return $this->hasMany(Apps::className(), ['idUser' => 'id']);
+    }
 
 
 

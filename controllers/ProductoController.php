@@ -1,15 +1,15 @@
 <?php
 namespace app\controllers;
 
+use app\models\Productos;
 use yii\rest\ActiveController;
-use app\models\Contacto;
 use Yii;
 use yii\web\HttpException;
 
-class ContactoController extends ActiveController
+class ProductoController extends ActiveController
 {
-    public $modelClass = 'app\models\Contacto';
-	
+    public $modelClass = 'app\models\Productos';
+
 	public function behaviors()
 	{
 
@@ -33,7 +33,8 @@ class ContactoController extends ActiveController
 		return $behaviors;
 	}
 	
-	    public function actions()
+	
+    public function actions()
 
     {
 
@@ -51,16 +52,16 @@ class ContactoController extends ActiveController
     public function actionIndex($app_idApp,$id)
 
     {
-		$contactos=Null;
-        if($id==0 ){
-			$contactos=Contacto::find()->where(["app_idApp"=>$app_idApp])->all();   
+		$productos=Null;
+        if($id==0){
+			$productos=Productos::find()->where(["app_idApp"=>$app_idApp])->all();   
 		}else{
-			$contactos=Contacto::findOne([$id,$app_idApp]); 
+			$productos=Productos::findOne([$id,$app_idApp]); 
 		}
 		
 		
-        if($contactos){
-            return $contactos;
+        if($productos){
+            return $productos;
         }else{
             throw new HttpException(404);
         }
@@ -69,44 +70,48 @@ class ContactoController extends ActiveController
     }
 	
 	public function actionUpdate(){
+		   /*$request = Yii::$app->request;
 
+			// returns all parameters
+			$params = $request->getBodyParams();
+
+			// returns the parameter "id"
+			$param = $request->getBodyParam('id');*/
 			$request = Yii::$app->request;
 
             if (isset($request)) {
 				$id=$request->getBodyParam("id");
 				$newId=$id;
 				
-				$contacto=new Contacto();
+				$producto=new Productos();
 				
 				if($id==0){
-					 $newId=$contacto->maxId($request->getBodyParam("app_idApp"))+1;
+					$newId=$producto->maxId($request->getBodyParam("app_idApp"))+1;
 
 				}else{
-					$contacto=Contacto::findOne(["app_idApp"=>$request->getBodyParam("app_idApp"),"id"=>$id]);	
-					if($contacto==Null){
-						$contacto=new Contacto();
-					}
+					$producto=Productos::findOne(["app_idApp"=>$request->getBodyParam("app_idApp"),"id"=>$id]);	
 				}
 				
 				
 
-				$fields=$contacto->attributes();
+				$fields=$producto->attributes();
 
 				foreach($fields as $f){
-					$contacto->{$f}=$request->getBodyParam($f);
+					$producto->{$f}=$request->getBodyParam($f);
 				}
-				if($contacto->tipo==null) $contacto->tipo='NORMAL';
-				$contacto->id=$newId;
+				$producto->id=$newId;
 				
-				if($contacto->save()){
-					return $contacto;
+				
+				if($producto->save()){
+					return $producto;
 				}else{
-					return $contacto->errors;
+					return $producto->errors;
 				}
 			}
 			
 		
 		return [];
 	}
+
 
 }
